@@ -4,11 +4,11 @@
 proto="$(echo $url_to_parse | grep :// | sed -e's,^\(.*://\).*,\1,g')"
 # remove the protocol
 url="$(echo ${url_to_parse/$proto/})"
-# extract the user (if any)
-userpass="$(echo $url | grep @ | cut -d@ -f1)"
-pass="$(echo $userpass | grep : | cut -d: -f2)"
+# extract the user (if any) - using  `|| true` to not be hit by grep exit code 1 if no match found
+userpass="$(echo $url | grep @ || true | cut -d@ -f1)"
+pass="$(echo $userpass | grep : || true | cut -d: -f2)"
 if [ -n "$pass" ]; then
-  user="$(echo $userpass | grep : | cut -d: -f1)"
+  user="$(echo $userpass | grep : || true | cut -d: -f1)"
 else
     user=$userpass
 fi
