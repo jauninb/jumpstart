@@ -53,7 +53,11 @@ cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key
 export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key
 export PEM_FILE_CONTENT_BASE64=$(cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key | base64 -w0)
 
-echo "PEM_FILE related environment variables (should be defined as secured stage properties)"
+echo "# DCT Related variables"
+echo "export DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER"
+echo "export DEVOPS_SIGNER=$DEVOPS_SIGNER"
+echo "export DCT_DISABLED=false"
+echo "# PEM_FILE related environment variables (should be defined as secured stage properties)"
 echo "export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE"
 echo "export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key"
 echo "export PEM_FILE_CONTENT_BASE64=\"$PEM_FILE_CONTENT_BASE64\""
