@@ -11,7 +11,6 @@ echo "DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER"
 
 # Notary Setup usage avec DCT
 # https://github.com/theupdateframework/notary/blob/master/docs/command_reference.md#set-up-notary-cli
-alias notary="notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust"
 
 export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=${DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE:-"dctrootpassphrase"}
 export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=${DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE:-"dctrepositorypassphrase"}
@@ -22,8 +21,8 @@ export NOTARY_SNAPSHOT_PASSPHRASE="$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE"
 export NOTARY_AUTH=$(echo -e "iamapikey:$IBMCLOUD_API_KEY" | base64)
 
 # repository init for the GUN (repo/namespace/image) using notary
-notary init "$GUN"
-notary publish "$GUN"
+notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust init "$GUN"
+notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"
 
 # create a devops key-pair dor the given DEVOPS_SIGNER
 docker trust key generate "$DEVOPS_SIGNER"
@@ -32,12 +31,12 @@ docker trust key generate "$DEVOPS_SIGNER"
 docker trust signer add --key "${DEVOPS_SIGNER}.pub" "$DEVOPS_SIGNER" "$GUN"
 
 # remove/revoke the snapshot delegation
-notary key rotate "$GUN" snapshot -r
-notary publish "$GUN"
+notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust key rotate "$GUN" snapshot -r
+notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"
 
 docker trust inspect --pretty $GUN
 
-notary delegation list "$GUN"
+notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust delegation list "$GUN"
 
 # If $ARCHIVE_DIR then create the tar file containing certificates/keys created during initialization
 # https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys
