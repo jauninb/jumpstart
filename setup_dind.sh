@@ -4,13 +4,19 @@ export CLUSTER_NAMESPACE=${CLUSTER_NAMESPACE:-"build"}
 export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
 
 echo "Logging in to build cluster account..."
-ibmcloud login -a "https://api.$IBMCLOUD_TARGET_REGION.bluemix.net" --apikey "$IBMCLOUD_API_KEY"
-ibmcloud target -r "$IBMCLOUD_TARGET_REGION"
+ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r "$IBMCLOUD_TARGET_REGION"
 
-echo "Running ibmcloud ks cluster-config --export $BUILD_CLUSTER..."
+if [ -z "$IBMCLOUD_TARGET_RESOURCE_GROUP" ]; then
+  echo "Using default resource group" 
+else
+  ibmcloud target -g "$IBMCLOUD_TARGET_RESOURCE_GROUP"
+fi
+
+echo "Cluster list:"
 ibmcloud ks clusters
 
-CLUSTER_CONFIG_COMMAND=$(ibmcloud ks cluster-config --export "$BUILD_CLUSTER") # this command outputs errors in stdout :(
+echo "Running ibmcloud ks cluster-config -cluster "$BUILD_CLUSTER" --export"
+CLUSTER_CONFIG_COMMAND=$(ibmcloud ks cluster-config -cluster "$BUILD_CLUSTER" --export)
 echo "$CLUSTER_CONFIG_COMMAND"
 eval $CLUSTER_CONFIG_COMMAND
 
