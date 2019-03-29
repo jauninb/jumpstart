@@ -33,6 +33,7 @@ if [[ "$http_post_status" == "201" ]]; then
       http_put_body=${http_response[@]::${#http_response[@]}-1}
 	  if [[ "$http_put_status" == "201" ]]; then
 	     echo "MergeRequest ( $mr_web_url ) was merged automatically"
+        RC=0
   	  else
 	     echo "MergeRequest ( $mr_web_url ) was not merged automatically - http status: $http_put_status - $http_put_body"
          RC=3
