@@ -36,7 +36,7 @@ if [[ "$http_post_status" == "201" ]]; then
         RC=0
   	  else
 	     echo "MergeRequest ( $mr_web_url ) was not merged automatically - http status: $http_put_status - $http_put_body"
-         RC=3
+        RC=3
 	  fi
    else
       echo "MergeRequest ( $mr_web_url ) can not be automatically merged - $mr_merge_status"
