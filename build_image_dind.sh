@@ -7,7 +7,7 @@
 
 if [ -z "$REGISTRY_URL" ]; then
   # Initialize REGISTRY_URL with the ibmcloud cr info output
-  export REGISTRY_URL=$(ibmcloud cr info | grep --ignore-case '^Container Registry' | sort | head -1 | awk '{print $3;}')
+  export REGISTRY_URL=$(ibmcloud cr info | grep -i '^Container Registry' | sort | head -1 | awk '{print $3;}')
 fi
 
 echo "REGISTRY_URL=${REGISTRY_URL}"
