@@ -10,7 +10,7 @@ http_response=$(curl -s -w "\n%{http_code}" -X POST --header "Private-Token: $GI
   --form "source_branch=$GIT_BRANCH" \
   --form "target_branch=$TARGET_GIT_BRANCH" \
   --form "title=Merge Request for $GIT_COMMIT" \
-  --form "remove_source_branch=false")
+  --form "remove_source_branch=${REMOVE_SOURCE_GIT_BRANCH:-false}")
 
 http_response=(${http_response[@]}) # convert to array
 http_post_status=${http_response[-1]} # get last element (last line)
