@@ -4,6 +4,12 @@
 # This script does build a Docker image using Docker-in-Docker into IBM Container Service private image registry,
 # and copies information into a build.properties file, so they can be reused later on by other scripts
 # (e.g. image url, chart name, ...)
+
+if [ -z "$REGISTRY_URL" ]; then
+  # Initialize REGISTRY_URL with the ibmcloud cr info output
+  export REGISTRY_URL=$(ibmcloud cr info | grep --ignore-case '^Container Registry' | sort | head -1 | awk '{print $3;}')
+fi
+
 echo "REGISTRY_URL=${REGISTRY_URL}"
 echo "REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE}"
 echo "IMAGE_NAME=${IMAGE_NAME}"
