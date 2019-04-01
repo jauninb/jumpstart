@@ -1,5 +1,10 @@
 #!/bin/bash
 # set -x
+unset url_to_parse
+unset git_api_url
+unset http_response
+unset http_post_status
+unset http_post_body
 
 url_to_parse=$GIT_URL
 source <(curl -sSL "https://raw.githubusercontent.com/jauninb/jumpstart/master/url_utils.sh")
