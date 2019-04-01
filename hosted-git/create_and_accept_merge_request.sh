@@ -1,4 +1,5 @@
 #!/bin/bash
+# set -x
 
 url_to_parse=$GIT_URL
 source <(curl -sSL "https://raw.githubusercontent.com/jauninb/jumpstart/master/url_utils.sh")
@@ -17,6 +18,7 @@ http_post_status=${http_response[-1]} # get last element (last line)
 http_post_body=${http_response[@]::${#http_response[@]}-1} 
 
 if [[ "$http_post_status" == "201" ]]; then
+   echo "http_post_body=$http_post_body"
    mr_iid=$(echo $http_post_body | jq -r '.iid')
    mr_merge_status=$(echo $http_post_body | jq -r '.merge_status')
    mr_web_url=$(echo $http_post_body | jq -r '.web_url')

@@ -1,4 +1,6 @@
 #!/bin/bash
+# uncomment to debug the script
+# set -x
 
 echo "DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER"
 # Pass phrase is needed to decrypt the private key by docker trust

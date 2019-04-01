@@ -1,4 +1,6 @@
 #!/bin/bash
+# uncomment to debug the script
+# set -x
 # use it using source <(curl -sSL "https://raw.githubusercontent.com/jauninb/jumpstart/master/url_utils.sh")
 
 proto="$(echo $url_to_parse | grep :// | sed -e's,^\(.*://\).*,\1,g')"

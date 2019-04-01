@@ -1,4 +1,7 @@
 #!/bin/bash
+# uncomment to debug the script
+# set -x
+
 export REGISTRY_URL=${REGISTRY_URL:-'uk.icr.io'}
 export REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE:-'bp2i'}
 export IMAGE_NAME=${IMAGE_NAME:-'signed-hello-app'}

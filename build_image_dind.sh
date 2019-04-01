@@ -1,6 +1,6 @@
 #!/bin/bash
 # uncomment to debug the script
-#set -x
+# set -x
 # This script does build a Docker image using Docker-in-Docker into IBM Container Service private image registry,
 # and copies information into a build.properties file, so they can be reused later on by other scripts
 # (e.g. image url, chart name, ...)
