@@ -8,3 +8,15 @@ git_api_url="$proto$host/api/v4/projects/$(basename $(urlencode $path) .git)/rep
 http_response=$(curl -s -w "\n%{http_code}" -X POST --header "Private-Token: $GIT_PASSWORD" $git_api_url \
   --form "branch=$NEW_GIT_BRANCH" \
   --form "ref=$GIT_COMMIT")
+
+http_response=(${http_response[@]}) # convert to array
+http_post_status=${http_response[-1]} # get last element (last line)
+http_post_body=${http_response[@]::${#http_response[@]}-1} 
+
+if [[ "$http_post_status" == "201" ]]; then
+  echo "Branch $NEW_GIT_BRANCH created"
+  RC=0
+else 
+  echo "Branch creation failed - http status: $http_post_status - $http_post_body"
+  RC=1
+fi
