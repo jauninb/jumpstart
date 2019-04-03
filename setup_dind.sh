@@ -6,6 +6,15 @@ export BUILD_CLUSTER=${BUILD_CLUSTER:-"bp2i"}
 export BUILD_CLUSTER_NAMESPACE=${BUILD_CLUSTER_NAMESPACE:-"build"}
 export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
 
+# if target region is in the 'ibm:yp:<region>' just keep the region part
+REGION_SUBSET=$(echo "$IBMCLOUD_TARGET_REGION" | awk -F ':' '{print $3;}')
+if [[ -z "$REGION_SUBSET" ]]; then
+  echo "IBM Cloud Target Region is $IBMCLOUD_TARGET_REGION"
+else
+  export IBMCLOUD_TARGET_REGION=$REGION_SUBSET
+  echo "IBM Cloud Target Region is $IBMCLOUD_TARGET_REGION. export IBMCLOUD_TARGET_REGION=$REGION_SUBSET done"
+fi
+
 echo "Logging in to build cluster account..."
 ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r "$IBMCLOUD_TARGET_REGION"
 
