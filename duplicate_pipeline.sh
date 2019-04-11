@@ -45,6 +45,9 @@ do
   
 done
 
+# Add the pipeline properties in the target YAML
+yq --yaml-output '.properties | {"properties": .}' $SOURCE_PIPELINE_ID.yaml >> $TARGET_PIPELINE_ID.yaml
+
 cat $TARGET_PIPELINE_ID.yaml
 
 # Include the yaml as rawcontent (ie needs to replace cr by \n and " by \" )
