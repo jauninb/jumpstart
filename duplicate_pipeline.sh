@@ -12,12 +12,12 @@ PIPELINE_API_URL="https://devops-api.$REGION.bluemix.net/v1/pipeline"
 
 if [ -z "$SOURCE_PIPELINE_ID" ]; then
   echo "Source pipeline not defined"
-  #exit 1
+  exit 1
 fi
 
 if [ -z "$TARGET_PIPELINE_ID" ]; then
   echo "Target pipeline not defined"
-  #exit 1
+  exit 1
 fi
 
 curl -H "Authorization: $BEARER_TOKEN" -H "Accept: application/x-yaml" -o "${SOURCE_PIPELINE_ID}.yaml" "$PIPELINE_API_URL/pipelines/$SOURCE_PIPELINE_ID"
