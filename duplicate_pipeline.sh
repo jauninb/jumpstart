@@ -3,6 +3,8 @@
 # set -x
 # This script does a duplication of a pipeline into an existing empty pipeline
 # It requires cURL, jq (https://stedolan.github.io/jq/) and yq (https://yq.readthedocs.io/en/latest/) available
+# You must be logged-in to the account and the region that the toolchain/pipelines you want to duplicate from/to
+# are hosted
 
 BEARER_TOKEN=$(ibmcloud iam oauth-tokens | sed 's/^IAM token:[ ]*//')
 
