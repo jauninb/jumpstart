@@ -3,7 +3,7 @@ FROM openjdk:8 AS base
 LABEL maintainer="Benoit Jaunin <jaunin.b@fr.ibm.com>"
 
 RUN apt-get update
-RUN apt-get install -y curl git maven sudo
+RUN apt-get install -y curl git maven jq sudo
 
 WORKDIR /root
 
