@@ -33,4 +33,5 @@ if [[ "$GIT_EVENT_PROVIDER" == "gitlab" ]] && [[ "$GIT_EVENT_TYPE" == "merge_req
   fi
 else
   echo "Git event triggering pipeline is not a Merge Request"
+  RC=0
 fi
