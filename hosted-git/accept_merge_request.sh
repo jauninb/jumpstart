@@ -30,6 +30,7 @@ if [[ "$GIT_EVENT_PROVIDER" == "gitlab" ]] && [[ "$GIT_EVENT_TYPE" == "merge_req
   else
     echo "MergeRequest ( $mr_web_url ) was not merged automatically - http status: $http_put_status - $http_put_body"
   RC=1
+  fi
 else
   echo "Git event triggering pipeline is not a Merge Request"
 fi
