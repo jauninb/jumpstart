@@ -24,7 +24,7 @@ if [[ "$GIT_EVENT_PROVIDER" == "gitlab" ]] && [[ "$GIT_EVENT_TYPE" == "merge_req
   http_response=(${http_response[@]}) # convert to array
   http_put_status=${http_response[-1]} # get last element (last line)
   http_put_body=${http_response[@]::${#http_response[@]}-1}
-  if [[ "$http_put_status" == "201" ]]; then
+  if [[ "$http_put_status" == "200" ]]; then
     echo "MergeRequest ( $mr_web_url ) was merged automatically"
     RC=0
   else
