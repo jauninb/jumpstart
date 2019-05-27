@@ -1,5 +1,5 @@
 #!/bin/bash
-# This scripts find the commons scripts usage in the templates in the open-toolchain organization
+# This script finds the commons scripts usage in the templates in the open-toolchain organization
 
 curl -H "Accept: application/vnd.github.preview" "https://api.github.com/search/code?q=user:open-toolchain+path:.bluemix+filename:toolchain.yml&per_page=100" > github_otc-templates_repositories.json
 
