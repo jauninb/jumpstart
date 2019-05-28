@@ -38,13 +38,19 @@ CF_SPACE_NAME=$(ibmcloud target --output JSON | jq -r .cf.space.name)
 # API Key is needed
 API_KEY=${API_KEY:-$IBM_CLOUD_API_KEY}
 
+# Toolchain Parameter for updating a TC
+if [ -z "$TARGET_TOOLCHAIN_ID" ]; then
+  TOOLCHAIN_PARAMETER=""
+else
+  TOOLCHAIN_PARAMETER="&toolchainId=$TARGET_TOOLCHAIN_ID"
+fi
+
 # Fill the parameters to be given using -d
 # dev-region,dev-organization,dev-space,api-key
-PARAMETERS_DATA='-d "prod-region=eu-de" -d "prod-organization=bjn_cf_org" -d "prod-space=dev"'
-FULLY_QUALIFIED_PARAMETERS_DATA='-d "form.pipeline.parameters.prod-region=eu-de" -d "form.pipeline.parameters.prod-organization=bjn_cf_org" -d "form.pipeline.parameters.prod-space=dev"'
+PARAMETERS_DATA="-d \"prod-region=$REGION_NAME\" -d \"prod-organization=$CF_ORG_NAME\" -d \"prod-space=$CF_SPACE_NAME\""
+FULLY_QUALIFIED_PARAMETERS_DATA="-d \"form.pipeline.parameters.prod-region=$REGION_NAME\" -d \"form.pipeline.parameters.prod-organization=$CF_ORG_NAME\" -d \"form.pipeline.parameters.prod-space=$CF_SPACE_NAME\""
 
 curl -is -X POST -H "Authorization: $IAM_TOKEN" \
- -d "autocreate=true" \
  -d "apiKey=$API_KEY" \
  -d "resourceGroupId=$RESOURCE_GROUP" \
  -d "env_id=$REGION_ID" \
@@ -52,4 +58,5 @@ curl -is -X POST -H "Authorization: $IAM_TOKEN" \
  -d "orgGuid=$CF_ORG_GUID" \
  -d "spaceGuid=$CF_SPACE_GUID" \
  -d "prod-region=$REGION_NAME" -d "prod-organization=$CF_ORG_NAME" -d "prod-space=$CF_SPACE_NAME" \
- "https://cloud.ibm.com/devops/setup/deploy?repository=$TEMPLATE_URL"
+ -d "region=$REGION_NAME" -d "organization=$CF_ORG_NAME" -d "space=$CF_SPACE_NAME" \
+ "https://cloud.ibm.com/devops/setup/deploy?repository=$TEMPLATE_URL&autocreate=true$TOOLCHAIN_PARAMETER"
