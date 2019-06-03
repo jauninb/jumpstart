@@ -41,32 +41,36 @@ docker trust inspect --pretty $GUN
 
 notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust delegation list "$GUN"
 
+export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
+
 # If $ARCHIVE_DIR then create the tar file containing certificates/keys created during initialization
-# https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys
+# https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys and specific information
+# for DCT initialization
 if [[ "$ARCHIVE_DIR" ]]; then
     mkdir -p $ARCHIVE_DIR
+    echo "GUN=$GUN" > $ARCHIVE_DIR/dct.properties
+    echo "DEVOPS_SIGNER=$DEVOPS_SIGNER" >> $ARCHIVE_DIR/dct.properties
+    echo "DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER" >> $ARCHIVE_DIR/dct.properties
+    echo "DEVOPS_SIGNER_PRIVATE_KEY=$DEVOPS_SIGNER_PRIVATE_KEY" >> $ARCHIVE_DIR/dct.properties
+    echo "DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
+    echo "DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
     umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz ~/.docker/trust/private "${DEVOPS_SIGNER}.pub"; umask 022
+else 
+    # No ARCHIVE_DIR so echo the information required to configure DCT
+    # Look for the private key file generated for the devops_signer
+    echo "Private Key for $DEVOPS_SIGNER"
+    cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key
+
+    export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key
+    export PEM_FILE_CONTENT_BASE64=$(cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key | base64 -w0)
+
+    echo "# DCT Related variables for signing $GUN"
+    echo "export DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER"
+    echo "export DEVOPS_SIGNER=$DEVOPS_SIGNER"
+    echo "export DCT_DISABLED=false"
+    echo "# PEM_FILE related environment variables (should be defined as secured stage properties)"
+    echo "export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE"
+    echo "export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE"
+    echo "export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key"
+    echo "export PEM_FILE_CONTENT_BASE64=\"$PEM_FILE_CONTENT_BASE64\""
 fi
-
-# Look for the private key file generated for the devops_signer
-export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
-echo "Private Key for $DEVOPS_SIGNER"
-cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key
-
-export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key
-export PEM_FILE_CONTENT_BASE64=$(cat ~/.docker/trust/private/$DEVOPS_SIGNER_PRIVATE_KEY.key | base64 -w0)
-
-echo "# DCT Related variables for signing $GUN"
-echo "export DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER"
-echo "export DEVOPS_SIGNER=$DEVOPS_SIGNER"
-echo "export DCT_DISABLED=false"
-echo "# PEM_FILE related environment variables (should be defined as secured stage properties)"
-echo "export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE"
-echo "export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE"
-echo "export PEM_FILE_NAME=$DEVOPS_SIGNER_PRIVATE_KEY.key"
-echo "export PEM_FILE_CONTENT_BASE64=\"$PEM_FILE_CONTENT_BASE64\""
-
-# source ./setup_dind.sh
-# source ./setup_ci-dct_env.sh
-# docker build hello-containers --tag "$GUN:1"
-# docker push --disable-content-trust=false "$GUN:1"
