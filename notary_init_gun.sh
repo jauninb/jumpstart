@@ -44,8 +44,8 @@ notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust delegation list "$GUN"
 export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
 
 # If $ARCHIVE_DIR then create the tar file containing certificates/keys created during initialization
-# https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys and specific information
-# for DCT initialization
+# https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys , add public key
+# and specific information for DCT initialization
 if [[ "$ARCHIVE_DIR" ]]; then
     mkdir -p $ARCHIVE_DIR
     echo "GUN=$GUN" > $ARCHIVE_DIR/dct.properties
@@ -54,7 +54,8 @@ if [[ "$ARCHIVE_DIR" ]]; then
     echo "DEVOPS_SIGNER_PRIVATE_KEY=$DEVOPS_SIGNER_PRIVATE_KEY" >> $ARCHIVE_DIR/dct.properties
     echo "DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
     echo "DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
-    umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz ~/.docker/trust/private "${DEVOPS_SIGNER}.pub"; umask 022
+    cp "${DEVOPS_SIGNER}.pub" $ARCHIVE_DIR
+    umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz ~/.docker/trust/private; umask 022
 else 
     # No ARCHIVE_DIR so echo the information required to configure DCT
     # Look for the private key file generated for the devops_signer
