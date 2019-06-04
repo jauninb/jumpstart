@@ -4,7 +4,7 @@
 
 if [ -z "$REGISTRY_URL" ]; then
   # Use the ibmcloud cr info to find the target registry url 
-  export REGISTRY_URL=$(ibmcloud cr info | grep -i '^Container Registry' | awk '{print $3}')
+  export REGISTRY_URL=$(ibmcloud cr info | grep -i -m1 '^Container Registry' | awk '{print $3}')
 fi
 export REGISTRY_NAMESPACE=${REGISTRY_NAMESPACE:-'bp2i'}
 export IMAGE_NAME=${IMAGE_NAME:-'signed-hello-app'}
