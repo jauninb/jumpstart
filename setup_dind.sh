@@ -16,7 +16,7 @@ else
 fi
 
 echo "Logging in to build cluster account..."
-ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r "$IBMCLOUD_TARGET_REGION"
+ibmcloud login --apikey "$IBM_CLOUD_API_KEY" -r "$IBMCLOUD_TARGET_REGION"
 
 if [ -z "$IBMCLOUD_TARGET_RESOURCE_GROUP" ]; then
   echo "Using default resource group" 
