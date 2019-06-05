@@ -2,7 +2,7 @@
 # uncomment to debug the script
 # set -x
 
-export BUILD_CLUSTER=${BUILD_CLUSTER:-"bp2i"}
+export BUILD_CLUSTER=${BUILD_CLUSTER:-"jumpstart"}
 export BUILD_CLUSTER_NAMESPACE=${BUILD_CLUSTER_NAMESPACE:-"build"}
 export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
 
