@@ -28,7 +28,12 @@ export NOTARY_AUTH=$(echo -e "iamapikey:$IBM_CLOUD_API_KEY" | base64)
 
 # repository init for the GUN (repo/namespace/image) using notary
 notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust init "$GUN"
-notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"
+if notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"; then
+  echo "$GUN initialized and published using notary"
+else
+  echo "Failure dusing $GUN initialization and publish"
+  exit 1;
+fi
 
 # create a devops key-pair dor the given DEVOPS_SIGNER
 docker trust key generate "$DEVOPS_SIGNER"
