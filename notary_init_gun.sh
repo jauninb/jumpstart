@@ -31,7 +31,7 @@ notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust init "$GUN"
 if notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"; then
   echo "$GUN initialized and published using notary"
 else
-  echo "Failure dusing $GUN initialization and publish"
+  echo "Failure during $GUN initialization and publish"
   exit 1;
 fi
 
