@@ -20,10 +20,12 @@ cise_crd_template=$(cat <<'EOT'
 EOT
 )
 
-printf "$cise_crd_template" \
-  "ImagePolicy" \
-  "$REGISTRY_NAMESPACE.$IMAGE_NAME.$DEVOPS_SIGNER" \
-  "$REGISTRY_URL/$REGISTRY_NAMESPACE/$IMAGE_NAME" \
-  "true" \
-  "$REGISTRY_NAMESPACE.$IMAGE_NAME.$DEVOPS_SIGNER" \
-  "true"
+createCISE_CRD() {
+    printf "$cise_crd_template" \
+    "ImagePolicy" \
+    "$REGISTRY_NAMESPACE.$IMAGE_NAME.$DEVOPS_SIGNER" \
+    "$REGISTRY_URL/$REGISTRY_NAMESPACE/$IMAGE_NAME" \
+    "true" \
+    "$REGISTRY_NAMESPACE.$IMAGE_NAME.$DEVOPS_SIGNER" \
+    "true"
+}
