@@ -3,20 +3,20 @@
 # set -x
 
 cise_crd_template=$(cat <<'EOT'
- apiVersion: securityenforcement.admission.cloud.ibm.com/v1beta1
- kind: %s
- metadata:
-   name: %s
- spec:
-    repositories:
-     - name: %s
-       policy:
-         trust:
-           enabled: %s
-           signerSecrets:
-           - name: %s
-         va:
-           enabled: %s
+apiVersion: securityenforcement.admission.cloud.ibm.com/v1beta1
+kind: %s
+metadata:
+  name: %s
+spec:
+  repositories:
+  - name: %s
+    policy:
+      trust:
+        enabled: %s
+        signerSecrets:
+        - name: %s
+      va:
+        enabled: %s
 EOT
 )
 
