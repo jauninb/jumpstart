@@ -40,3 +40,4 @@ if [ -z "${TILLER_VERSION}" ]; then
     # kubectl rollout status -w deployment/tiller-deploy --namespace=kube-system
 fi
 helm version
+helm init
