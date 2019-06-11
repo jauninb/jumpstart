@@ -2,6 +2,11 @@
 # uncomment to debug the script
 # set -x
 
+if [ -z "$REGISTRY_URL" ]; then
+  # Use the ibmcloud cr info to find the target registry url 
+  export REGISTRY_URL=$(ibmcloud cr info | grep -i '^Container Registry' | sort | head -1 | awk '{print $3;}')
+fi
+
 cise_crd_template=$(cat <<'EOT'
 apiVersion: securityenforcement.admission.cloud.ibm.com/v1beta1
 kind: %s
