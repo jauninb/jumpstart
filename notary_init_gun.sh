@@ -35,7 +35,7 @@ else
   exit 1;
 fi
 
-# create a devops key-pair dor the given DEVOPS_SIGNER
+# create a devops key-pair for the given DEVOPS_SIGNER
 docker trust key generate "$DEVOPS_SIGNER"
 
 # Add the public key to the signer for the $GUN
