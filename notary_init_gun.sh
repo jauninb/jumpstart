@@ -67,7 +67,7 @@ if [[ "$ARCHIVE_DIR" ]]; then
     echo "DEVOPS_SIGNER_PRIVATE_KEY=$DEVOPS_SIGNER_PRIVATE_KEY" >> $ARCHIVE_DIR/dct.properties
     cp "${DEVOPS_SIGNER}.pub" $ARCHIVE_DIR
     docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers' > $ARCHIVE_DIR/dct_signers.json
-    umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz ~/.docker/trust/private; umask 022
+    umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz --directory ~ .docker/trust/private; umask 022
 else 
     # No ARCHIVE_DIR so echo the information required to configure DCT
     # Look for the private key file generated for the devops_signer
