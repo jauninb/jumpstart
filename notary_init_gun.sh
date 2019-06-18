@@ -63,8 +63,6 @@ if [[ "$ARCHIVE_DIR" ]]; then
     echo "DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER" >> $ARCHIVE_DIR/dct.properties
     echo "DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
     echo "DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties
-    echo "DEVOPS_SIGNER=$DEVOPS_SIGNER" >> $ARCHIVE_DIR/dct.properties
-    echo "DEVOPS_SIGNER_PRIVATE_KEY=$DEVOPS_SIGNER_PRIVATE_KEY" >> $ARCHIVE_DIR/dct.properties
     cp "${DEVOPS_SIGNER}.pub" $ARCHIVE_DIR
     docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers' > $ARCHIVE_DIR/dct_signers.json
     umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz --directory ~ .docker/trust/private; umask 022
