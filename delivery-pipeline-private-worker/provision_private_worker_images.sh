@@ -1,7 +1,6 @@
 #!/bin/bash
 region=${region:-"us-south"}
-target_cr=${target_cr:-"us.icr.io"}
-target_cr="mycluster168.icp:8500"
+target_cr=${target_cr:-"mycluster168.icp:8500"}
 install_filename="updated-private-worker-install.yaml"
 
 curl -o $install_filename  https://private-worker-service.$region.devops.cloud.ibm.com/install

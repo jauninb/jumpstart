@@ -1,6 +1,5 @@
 #!/bin/bash
-target_cr=${target_cr:-"us.icr.io"}
-target_cr="mycluster168.icp:8500"
+target_cr=${target_cr:-"mycluster168.icp:8500"}
 
 docker pull --all-tags ibmcom/pipeline-base-image
 
