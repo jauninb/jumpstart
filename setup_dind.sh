@@ -40,7 +40,7 @@ fi
 # Ensure there is a Docker server on the ${BUILD_CLUSTER}
 if ! kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" rollout status -w deployment/docker; then
   echo "Installing Docker Server into build cluster..."
-  kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" run docker --image=docker:dind --overrides='{ "apiVersion": "apps/v1", "spec": { "template": { "spec": {"containers": [ { "name": "docker", "image": "docker:dind", "securityContext": { "privileged": true } } ] } } } }'
+  kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" run docker --image=docker:18.09.2-dind --overrides='{ "apiVersion": "apps/v1", "spec": { "template": { "spec": {"containers": [ { "name": "docker", "image": "docker:18.09.2-dind", "securityContext": { "privileged": true } } ] } } } }'
   kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" rollout status -w deployment/docker
 fi
 
