@@ -104,22 +104,8 @@ function writeFile {
     echo "$(base64TextDecode $file_data_base64)" >> "$DOCKER_TRUST_DIRECTORY"/"$file_name"
     #pem files only valid in rw mode
     chmod -R 600 "$DOCKER_TRUST_DIRECTORY"/"$file_name"
-    cat "$DOCKER_TRUST_DIRECTORY"/"$file_name"
 }
 
-function demo {
-    docker pull alpine
-    docker images
-    docker image tag alpine:latest hhdevnamespace/alpinedemo:test
-    export DOCKER_CONTENT_TRUST=1
-    export DOCKER_CONTENT_TRUST__ROOT_PASSPHRASE="myrootkey"
-    export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE="myrepokey"
-    cd ~/.docker/trust/private
-    ls
-    docker push hhdevnamespace/alpinedemo:test
-    ls
-    #store the key
-}
 #this will store a map of the pem file name with the associated roles
 #delegate public keys are not auto generated
 function generateMap {
@@ -227,8 +213,3 @@ function restoreDockerTrust {
     tar -xvf "$DOCKER_HOME_DIRECTORY"/trustrestore.tar.gz
     rm -rf "$DOCKER_HOME_DIRECTORY"/trustrestore.tar.gz
 }
-#abc=$(base64TextEncode "/Users/huayuenhui/.docker/trust/private/aea7dddd64d20369309c00a44cd1d22a063e9e37152ada5531cae0885ed6954b.key")
-#echo "$(base64TextDecode $abc)" >> "$DOCKER_TRUST_DIRECTORY"/test.key
-#echo $(convertTrustFileToJSON "root")
-#jsonval=$(convertTrustFileToJSON "root")
-#writeFile "$jsonval"
