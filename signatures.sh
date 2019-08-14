@@ -7,6 +7,7 @@ source <(curl -sSL "https://raw.githubusercontent.com/huayuenh/advancedkubetoolc
 USE_KEY_PROTECT_VAULT=1
 DOCKER_TRUST_DIRECTORY=~/.docker/trust/private
 DOCKER_HOME_DIRECTORY=~/.docker
+DOCKER_TRUST_HOME=~/.docker/trust
 
 #Helper function to generate a JSON for storing
 #the required data to construct a docker pem file
@@ -101,7 +102,7 @@ function writeFile {
     local json_data=$1
     local file_name=$(getJSONValue "name" "$json_data")
     local file_data_base64=$(getJSONValue "value" "$json_data")
-    if [  ! -d "~/.docker/trust" ] 
+    if [  ! -d "$DOCKER_TRUST_HOME" ] 
     then
         echo "creating trust directory" 
         mkdir ~/.docker/trust
