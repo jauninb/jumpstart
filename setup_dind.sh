@@ -5,7 +5,6 @@
 export BUILD_CLUSTER=${BUILD_CLUSTER:-"jumpstart"}
 export BUILD_CLUSTER_NAMESPACE=${BUILD_CLUSTER_NAMESPACE:-"build"}
 export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
-export REGISTRY_URL="us.icr.io "
 # if target region is in the 'ibm:yp:<region>' just keep the region part
 REGION_SUBSET=$(echo "$IBMCLOUD_TARGET_REGION" | awk -F ':' '{print $3;}')
 if [[ -z "$REGION_SUBSET" ]]; then
@@ -40,7 +39,7 @@ fi
 # Ensure there is a Docker server on the ${BUILD_CLUSTER}
 if ! kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" rollout status -w deployment/docker; then
   echo "Installing Docker Server into build cluster..."
-  kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" run docker --image=docker:dind --overrides='{ "apiVersion": "apps/v1", "spec": { "template": { "spec": {"containers": [ { "name": "docker", "image": "docker:dind", "securityContext": { "privileged": true } } ] } } } }'
+  kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" run docker --image=docker:18.09.2-dind --overrides='{ "apiVersion": "apps/v1", "spec": { "template": { "spec": {"containers": [ { "name": "docker", "image": "docker:dind", "securityContext": { "privileged": true } } ] } } } }'
   kubectl --namespace "$BUILD_CLUSTER_NAMESPACE" rollout status -w deployment/docker
 fi
 
