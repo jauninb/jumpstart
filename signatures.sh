@@ -28,7 +28,8 @@ function getJSONValue {
 }
 
 #Store the required identifiers for the Key Protect Vault
-function buildVaultJSONDetails {
+
+function buildVaultAccessDetailsJSON {
     local NAME=$1
     local REGION=$2
     local RESOURCE_GROUP=$3
@@ -39,7 +40,7 @@ function buildVaultJSONDetails {
 #KEY -> the key used in the Key Protect/Vault or other lookup
 #JSON_DATA payload for the Vault store or other containing the pem file name and data
 #VAULT_DATA data wrapper for values required for Vault access
-function savePem {
+function saveData {
     #name of the entry root, repokey, delegate etc. This represents the vault/store entry key
     local KEY=$1
     #Docker Trust keys are named with GUIDs. Name needs to be correctly associated with the pem data
@@ -72,13 +73,13 @@ function savePemFileByRoleToVault {
     local vault_key=$2
     local vault_data=$3
     local json_data=$(convertTrustFileToJSON "$role")
-    echo $(savePem "$vault_key" "$vault_data" "$json_data" )
+    echo $(saveData "$vault_key" "$vault_data" "$json_data" )
 }
 
 #Function to read the docker pem file data from secure storage
 #KEY -> the look up key for teh storage
 #VAULT_DATA the variable/json storing the required Vault details
-function readPem {
+function readData {
     local KEY=$1
     local VAULT_DATA=$2
     #if [$USE_KEY_PROTECT_VAULT -eq 1]; then
@@ -188,35 +189,4 @@ function deleteVault {
           "$VAULT_RESOURCE_GROUP"
       )
       echo "DELETE_VAULT_RESPONSE=${DELETE_VAULT_RESPONSE}"
-}
-
-function createSigner {
-    local signer=$1
-    local repo=$2
-    cd "$DOCKER_HOME_DIRECTORY"
-    docker trust key generate "$signer"
-    docker trust signer add --key "$signer".pub "$signer" "$repo"
-}
-
-function signWithDelegate {
-    local repo=$1
-    docker trust sign "$repo"
-}
-
-function saveDockerTrust {
-    local vault_key=$1
-    local vault_data=$2
-    tar -czvf "$DOCKER_HOME_DIRECTORY"/trust_temp_bak.tar.gz trust
-    local data=$(base64TextEncode "$DOCKER_HOME_DIRECTORY"/trust_temp_bak.tar.gz)
-    echo $(savePem "$vault_key" "$vault_data" "$data") 
-    rm -rf "$DOCKER_HOME_DIRECTORY"/trust_temp_bak.tar.gz
-}
-
-function restoreDockerTrust {
-    local vault_key=$1
-    local vault_data=$2
-    local data=$(readPem "$vault_key" "$vault_data")
-    echo "$data" | base64 -d >>"$DOCKER_HOME_DIRECTORY"/trustrestore.tar.gz
-    tar -xvf "$DOCKER_HOME_DIRECTORY"/trustrestore.tar.gz
-    rm -rf "$DOCKER_HOME_DIRECTORY"/trustrestore.tar.gz
 }
