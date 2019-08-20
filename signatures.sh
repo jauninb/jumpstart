@@ -76,6 +76,15 @@ function savePemFileByRoleToVault {
     echo $(saveData "$vault_key" "$vault_data" "$json_data" )
 }
 
+function savePemFileToVault {
+    local filename=$1
+    local vault_key=$2
+    local vault_data=$3
+    local base64EncodedPem=$(base64TextEncode "$file")
+    local payload=$(generateKeyValueJSON "$filename" "$base64EncodedPem")
+    echo $(saveData "$vault_key" "$vault_data" "$payload" )
+}
+
 #Function to read the docker pem file data from secure storage
 #KEY -> the look up key for teh storage
 #VAULT_DATA the variable/json storing the required Vault details
