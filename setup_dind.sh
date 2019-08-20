@@ -5,7 +5,7 @@
 export BUILD_CLUSTER=${BUILD_CLUSTER:-"jumpstart"}
 export BUILD_CLUSTER_NAMESPACE=${BUILD_CLUSTER_NAMESPACE:-"build"}
 export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
-
+export REGISTRY_URL="us.icr.io "
 # if target region is in the 'ibm:yp:<region>' just keep the region part
 REGION_SUBSET=$(echo "$IBMCLOUD_TARGET_REGION" | awk -F ':' '{print $3;}')
 if [[ -z "$REGION_SUBSET" ]]; then
@@ -54,6 +54,6 @@ while ! nc -z localhost 2375; do
 done
 
 export DOCKER_HOST='tcp://localhost:2375'
-
+echo "REGISTRY URL $REGISTRY_URL"
 echo "Logging in to docker registry..."
 ibmcloud cr login
