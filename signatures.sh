@@ -80,7 +80,7 @@ function savePemFileToVault {
     local filename=$1
     local vault_key=$2
     local vault_data=$3
-    local base64EncodedPem=$(base64TextEncode "$file")
+    local base64EncodedPem=$(base64TextEncode "$filename")
     local payload=$(generateKeyValueJSON "$filename" "$base64EncodedPem")
     echo $(saveData "$vault_key" "$vault_data" "$payload" )
 }
