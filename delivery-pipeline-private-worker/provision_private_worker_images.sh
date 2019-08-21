@@ -2,6 +2,7 @@
 region=${region:-"us-south"}
 target_cr=${target_cr:-"mycluster168.icp:8500"}
 install_filename="updated-private-worker-install.yaml"
+dockerio_mapping_prefix=${dockerio_mapping_prefix:-""}
 
 curl -o $install_filename  https://private-worker-service.$region.devops.cloud.ibm.com/install
 
@@ -18,7 +19,7 @@ cat $install_filename | grep -e 'gcr.io/tekton-releases/github.com/tektoncd/pipe
     # if $image only have a single slash it is coming from dockerhub
     number_of_slashes=$(echo $image | tr -cd '/' | wc -c)
     if [ "$number_of_slashes" == "1" ]; then
-      new_image_tag="$target_cr/$image"   
+      new_image_tag="$target_cr/${dockerio_mapping_prefix}${image}"   
     fi
     # replace the sha id reference in the tag if any
     new_image_tag="${new_image_tag/@sha256/}"
