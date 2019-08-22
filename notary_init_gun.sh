@@ -52,8 +52,11 @@ if [[ "$ARCHIVE_DIR" ]]; then
     # if no vault is configured, keep the passphrase and backup the keys in the archive
     # https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys
     if [ -z "$VAULT_INSTANCE" ]; then
+      echo "No Vault instance defined - backup up the keys in $ARCHIVE_DIR"
       echo "DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE=$DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties	
       echo "DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE" >> $ARCHIVE_DIR/dct.properties	
       umask 077; tar -zcvf $ARCHIVE_DIR/private_keys_backup.tar.gz --directory ~ .docker/trust/private; umask 022    
+    else 
+      echo "Vault instance defined - it would be used for the key backup"
     fi
 fi
