@@ -1,5 +1,5 @@
 #!/bin/bash
-source <(curl -sSL "https://raw.githubusercontent.com/huayuenh/advancedkubetoolchain/master/scripts/secrets_management.sh")
+source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/secrets_management.sh")
 
 #Assumes default Docker Trust location
 #USE KEY PROTECT VAULT set value to 1
