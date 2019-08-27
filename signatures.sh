@@ -24,7 +24,7 @@ function generateKeyValueJSON {
 function getJSONValue {
     local KEY=$1
     local JSON=$2
-    echo $JSON| jq -r ."$KEY"
+    echo $JSON| jq -r '.["'$KEY'"]'
 }
 
 #add or update key/value pair to json
