@@ -27,6 +27,50 @@ function getJSONValue {
     echo $JSON| jq -r ."$KEY"
 }
 
+#add or update key/value pair to json
+function addJSONEntry {
+    local json=$1
+    #init json if null
+    if [ -z "$json" ]
+    then
+        json="{}"
+    fi
+    local key=$2
+    local value=$3
+    echo $(jq --arg key "$key" --arg value "$value" '.[$key] = $value' <<<$json)
+}
+
+#remove the key from json
+function removeJSONEntry {
+    local json=$1
+    local key=$2
+    echo "$(jq --arg key $key 'del(.[$key])' <<<$json)"
+}
+
+#Params
+#Role - the role to find in the pem file
+#return json containing pem fail name and pem data in base64
+function addTrustFileToJSON {
+    local ROLE=$1
+    local json=$2
+    
+    #check all files in the dokcer trust
+    for file in $DOCKER_TRUST_DIRECTORY/*
+    do
+        #Only need the pem file containing the specified role
+        if grep -q "$ROLE" "$file"; then
+        local filename=$(basename $file)
+        local base64EncodedPem=$(base64TextEncode "$file")
+        local data=$(addJSONEntry "$data" "name" "$filename")
+        data=$(addJSONEntry "$data" "value" "$base64EncodedPem")
+        json=$(addJSONEntry "$json" "$ROLE" "$data")
+        echo "$json"
+        #end loop once target role hase been found
+        break
+        fi
+    done
+}
+
 #Store the required identifiers for the Key Protect Vault
 
 function buildVaultAccessDetailsJSON {
