@@ -53,6 +53,7 @@ function removeJSONEntry {
 function addTrustFileToJSON {
     local ROLE=$1
     local json=$2
+    local passphrase=$3
     
     #check all files in the dokcer trust
     for file in $DOCKER_TRUST_DIRECTORY/*
@@ -63,6 +64,9 @@ function addTrustFileToJSON {
         local base64EncodedPem=$(base64TextEncode "$file")
         local data=$(addJSONEntry "$data" "name" "$filename")
         data=$(addJSONEntry "$data" "value" "$base64EncodedPem")
+        if [ "$passphrase" ]; then
+            data=$(addJSONEntry "$data" "passphrase" "$passphrase")
+        fi
         json=$(addJSONEntry "$json" "$ROLE" "$data")
         echo "$json"
         #end loop once target role hase been found
