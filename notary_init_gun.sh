@@ -33,7 +33,8 @@ else
   exit 1;
 fi
 
-# remove/revoke the snapshot delegation
+# remove/revoke the snapshot delegation in order for the delegation to not need the snapshot key
+# https://docs.docker.com/notary/advanced_usage/#rotate-keys
 notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust key rotate "$GUN" snapshot -r
 notary -s $DOCKER_CONTENT_TRUST_SERVER -d ~/.docker/trust publish "$GUN"
 
