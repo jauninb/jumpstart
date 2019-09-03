@@ -2,14 +2,14 @@
 # uncomment to debug the script
 # set -x
 
-export DEVOPS_SIGNER=${DEVOPS_SIGNER:-"devops"}
+#export DEVOPS_SIGNER=${DEVOPS_SIGNER:-"devops"}
 
 # Add the public key to the signer for the $GUN
-docker trust signer add --key "${DEVOPS_SIGNER}.pub" "$DEVOPS_SIGNER" "$GUN"
+#docker trust signer add --key "${DEVOPS_SIGNER}.pub" "$DEVOPS_SIGNER" "$GUN"
 
-docker trust inspect --pretty $GUN
+#docker trust inspect --pretty $GUN
 
-export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
+#export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
 
 # If $ARCHIVE_DIR then create the tar file containing certificates/keys created during initialization
 # https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys , add public key
@@ -17,7 +17,7 @@ export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "
 if [[ "$ARCHIVE_DIR" ]]; then
     mkdir -p $ARCHIVE_DIR
     # keep the signer ids
-    docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers' > $ARCHIVE_DIR/dct_signers.json
+    #docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers' > $ARCHIVE_DIR/dct_signers.json
     # keep the signed registry context
     echo "GUN=$GUN" > $ARCHIVE_DIR/dct.properties
     echo "REGISTRY_URL=${REGISTRY_URL}" >> $ARCHIVE_DIR/dct.properties
