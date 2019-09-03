@@ -17,7 +17,7 @@ if [[ "$ARCHIVE_DIR" ]]; then
     echo "IMAGE_NAME=${IMAGE_NAME}" >> $ARCHIVE_DIR/dct.properties
     echo "DOCKER_CONTENT_TRUST_SERVER=$DOCKER_CONTENT_TRUST_SERVER" >> $ARCHIVE_DIR/dct.properties
     # public key of signer are kept in archive as needed for CISE configuration for instance
-    cp *.pub $ARCHIVE_DIR
+    cp ~/.docker/trust/private/*.pub $ARCHIVE_DIR
 
     # if no vault is configured, keep the passphrase and backup the keys in the archive
     # https://docs.docker.com/engine/security/trust/trust_key_mng/#back-up-your-keys
