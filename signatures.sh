@@ -55,6 +55,11 @@ function addTrustFileToJSON {
     local json=$2
     local passphrase=$3
     
+    if [ -z "$json" ]
+    then
+        json="{}"
+    fi
+    
     #check all files in the dokcer trust
     for file in $DOCKER_TRUST_DIRECTORY/*
     do
