@@ -172,7 +172,7 @@ function writeFile {
         SAVEPATH="$DOCKER_TRUST_DIRECTORY"
     fi
 
-    if [  ! -d "$DOCKER_TRUST_HOME" ] 
+    if [  -z "$SAVEPATH" ] 
     then
         echo "creating trust directory" 
         mkdir ~/.docker/trust
