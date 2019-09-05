@@ -167,18 +167,14 @@ function writeFile {
     local file_data_base64=$(getJSONValue "value" "$json_data")
     local SAVEPATH=$2
 
-    if [ -z "$SAVEPATH" ]
-    then
-        SAVEPATH="$DOCKER_TRUST_DIRECTORY"
-    fi
-
     if [  -z "$SAVEPATH" ] 
     then
+        SAVEPATH="$DOCKER_TRUST_DIRECTORY"
         echo "creating trust directory" 
         mkdir ~/.docker/trust
         mkdir ~/.docker/trust/private
     fi
-    
+
     echo "$(base64TextDecode $file_data_base64)" >> "$SAVEPATH"/"$file_name"
     #pem files only valid in rw mode
     chmod -R 600 "$SAVEPATH"/"$file_name"
