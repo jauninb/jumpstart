@@ -59,7 +59,7 @@ function addTrustFileToJSON {
     then
         json="{}"
     fi
-    
+
     #check all files in the dokcer trust
     for file in $DOCKER_TRUST_DIRECTORY/*
     do
@@ -169,7 +169,7 @@ function writeFile {
 
     if [ -z "$SAVEPATH" ]
     then
-        SAVEPATH="  $DOCKER_TRUST_DIRECTORY"
+        SAVEPATH="$DOCKER_TRUST_DIRECTORY"
     fi
 
     if [  ! -d "$DOCKER_TRUST_HOME" ] 
@@ -178,7 +178,7 @@ function writeFile {
         mkdir ~/.docker/trust
         mkdir ~/.docker/trust/private
     fi
-    if
+    
     echo "$(base64TextDecode $file_data_base64)" >> "$SAVEPATH"/"$file_name"
     #pem files only valid in rw mode
     chmod -R 600 "$SAVEPATH"/"$file_name"
