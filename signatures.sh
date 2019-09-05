@@ -165,15 +165,23 @@ function writeFile {
     local json_data=$1
     local file_name=$(getJSONValue "name" "$json_data")
     local file_data_base64=$(getJSONValue "value" "$json_data")
+    local SAVEPATH=$2
+
+    if [ -z "$SAVEPATH" ]
+    then
+        SAVEPATH="  $DOCKER_TRUST_DIRECTORY"
+    fi
+
     if [  ! -d "$DOCKER_TRUST_HOME" ] 
     then
         echo "creating trust directory" 
         mkdir ~/.docker/trust
         mkdir ~/.docker/trust/private
     fi
-    echo "$(base64TextDecode $file_data_base64)" >> "$DOCKER_TRUST_DIRECTORY"/"$file_name"
+    if
+    echo "$(base64TextDecode $file_data_base64)" >> "$SAVEPATH"/"$file_name"
     #pem files only valid in rw mode
-    chmod -R 600 "$DOCKER_TRUST_DIRECTORY"/"$file_name"
+    chmod -R 600 "$SAVEPATH"/"$file_name"
 }
 
 #this will store a map of the pem file name with the associated roles
