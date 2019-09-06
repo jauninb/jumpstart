@@ -1,20 +1,7 @@
 #!/bin/bash
 # uncomment to debug the script
 # set -x
-echo "Restoring keys from $VAULT_INSTANCE"
-source <(curl -sSL "https://raw.githubusercontent.com/huayuenh/jumpstart/test/signatures.sh")
-VAULT_DATA=$(buildVaultAccessDetailsJSON "$VAULT_INSTANCE" "$IBMCLOUD_TARGET_REGION" "$IBMCLOUD_TARGET_RESOURCE_GROUP")
-#write repo pem file to trust/private. Only repo key required to add delegate
-export CURRENT_PATH=$(pwd)
-JSON_DATA="$(readData "$REGISTRY_NAMESPACE.$IMAGE_NAME.keys" "$VAULT_DATA")"
-repokey=$(getJSONValue "target" "$JSON_DATA")
-writeFile "$repokey"
-PUBLIC_DATA="$(readData "$REGISTRY_NAMESPACE.$IMAGE_NAME.pub" "$VAULT_DATA")"
-publickey=$(getJSONValue "$DEVOPS_SIGNER" "$PUBLIC_DATA")
-writeFile "$publickey" "$CURRENT_PATH"
-export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE=$(getJSONValue "passphrase" "$repokey")
-docker trust signer add --key "${DEVOPS_SIGNER}.pub" "$DEVOPS_SIGNER" "$GUN"
-docker trust inspect --pretty $GUN
+
 export DEVOPS_SIGNER=${DEVOPS_SIGNER:-"devops"}
 export DEVOPS_SIGNER_PRIVATE_KEY=$(docker trust inspect $GUN | jq -r --arg GUN "$GUN" --arg DEVOPS_SIGNER "$DEVOPS_SIGNER" '.[] | select(.name=$GUN) | .Signers[] | select(.Name=$DEVOPS_SIGNER) | .Keys[0].ID')
 
