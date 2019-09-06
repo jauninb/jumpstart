@@ -53,7 +53,13 @@ function removeJSONEntry {
 function addTrustFileToJSON {
     local ROLE=$1
     local json=$2
+    local passphrase=$3
     
+    if [ -z "$json" ]
+    then
+        json="{}"
+    fi
+
     #check all files in the dokcer trust
     for file in $DOCKER_TRUST_DIRECTORY/*
     do
@@ -63,6 +69,9 @@ function addTrustFileToJSON {
         local base64EncodedPem=$(base64TextEncode "$file")
         local data=$(addJSONEntry "$data" "name" "$filename")
         data=$(addJSONEntry "$data" "value" "$base64EncodedPem")
+        if [ "$passphrase" ]; then
+            data=$(addJSONEntry "$data" "passphrase" "$passphrase")
+        fi
         json=$(addJSONEntry "$json" "$ROLE" "$data")
         echo "$json"
         #end loop once target role hase been found
@@ -156,15 +165,19 @@ function writeFile {
     local json_data=$1
     local file_name=$(getJSONValue "name" "$json_data")
     local file_data_base64=$(getJSONValue "value" "$json_data")
-    if [  ! -d "$DOCKER_TRUST_HOME" ] 
+    local SAVEPATH=$2
+
+    if [  -z "$SAVEPATH" ] 
     then
+        SAVEPATH="$DOCKER_TRUST_DIRECTORY"
         echo "creating trust directory" 
         mkdir ~/.docker/trust
         mkdir ~/.docker/trust/private
     fi
-    echo "$(base64TextDecode $file_data_base64)" >> "$DOCKER_TRUST_DIRECTORY"/"$file_name"
+
+    echo "$(base64TextDecode $file_data_base64)" >> "$SAVEPATH"/"$file_name"
     #pem files only valid in rw mode
-    chmod -R 600 "$DOCKER_TRUST_DIRECTORY"/"$file_name"
+    chmod -R 600 "$SAVEPATH"/"$file_name"
 }
 
 #this will store a map of the pem file name with the associated roles
