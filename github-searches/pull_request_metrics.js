@@ -68,6 +68,7 @@ function getElements(url, options, processElements) {
             }
             if (argv.v) {
                 logRateLimit(response);
+                console.log("Processing returned elements for HTTP GET " + url);
             }
             processElements(elements);
             let result = { elements: elements };
