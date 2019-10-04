@@ -33,8 +33,8 @@ curl -H "Authorization: $BEARER_TOKEN" -H "Content-Type: application/json" -o "$
 # convert the yaml to json
 yq r -j ${SOURCE_PIPELINE_ID}.yaml | tee ${SOURCE_PIPELINE_ID}.json
 
-# Remove the hooks
-jq 'del(. | .hooks)' $SOURCE_PIPELINE_ID.json > "${TARGET_PIPELINE_ID}.json"
+# Remove the hooks and (temporary workaround) the workers definition also
+jq 'del(. | .hooks)' $SOURCE_PIPELINE_ID.json | jq 'del(.stages[] | .worker)' > "${TARGET_PIPELINE_ID}.json"
 
 # Add the token url
 jq -r '.stages[] | select( .inputs[0].type=="git") | .inputs[0].url' $SOURCE_PIPELINE_ID.json |\
