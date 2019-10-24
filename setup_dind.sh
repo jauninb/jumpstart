@@ -8,7 +8,7 @@ export IBMCLOUD_TARGET_REGION=${IBMCLOUD_TARGET_REGION:-"eu-gb"}
 
 # if target region is in the 'ibm:yp:<region>' just keep the region part
 REGION_SUBSET=$(echo "$IBMCLOUD_TARGET_REGION" | awk -F ':' '{print $3;}')
-if [[ -z "$REGION_SUBSET" ]]; then
+if [ -z "$REGION_SUBSET" ]; then
   echo "IBM Cloud Target Region is $IBMCLOUD_TARGET_REGION"
 else
   export IBMCLOUD_TARGET_REGION=$REGION_SUBSET
