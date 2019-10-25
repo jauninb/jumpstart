@@ -3,14 +3,16 @@
 # set -x
 # This script does a duplication of a pipeline into an existing empty pipeline
 # It requires cURL, jq (https://stedolan.github.io/jq/) and yq (https://github.com/mikefarah/yq) available
-# You must be logged-in to the account and the region that the toolchain/pipelines you want to duplicate from/to
+# You must be logged-in to the account, resource group and region that the toolchain/pipelines you want to duplicate from/to
 # are hosted
 
 BEARER_TOKEN=$(ibmcloud iam oauth-tokens | sed 's/^IAM token:[ ]*//')
 
 REGION=$(ibmcloud target | grep -i region: | awk '{print $2};')
 
-PIPELINE_API_URL="https://devops-api.$REGION.bluemix.net/v1/pipeline"
+OTC_API_SERVICE_INSTANCES_URL="https://devops-api.$REGION.devops.cloud.ibm.com/v1/service_instances"
+
+PIPELINE_API_URL="https://devops-api.$REGION.devops.cloud.ibm.com/v1/pipeline"
 
 if [ -z "$SOURCE_PIPELINE_ID" ]; then
   echo "Source pipeline not defined"
@@ -18,8 +20,21 @@ if [ -z "$SOURCE_PIPELINE_ID" ]; then
 fi
 
 if [ -z "$TARGET_PIPELINE_ID" ]; then
-  echo "Target pipeline not defined"
-  exit 1
+  # Retrieve source pipeline information to mint name/label/type
+  curl -H "Authorization: $BEARER_TOKEN" -H "Content-Type: application/json"  -o ${SOURCE_PIPELINE_ID}.json "$OTC_API_SERVICE_INSTANCES_URL/$SOURCE_PIPELINE_ID"
+  TARGET_PIPELINE_NAME="$(cat $SOURCE_PIPELINE_ID.json | jq -r '.parameters.name')-copy"
+  if [ -z "$TOOLCHAIN_ID" ]; then
+    echo "Target toolchain not defined"
+    exit 1
+  fi
+  # Create a new target pipeline
+  curl -H "Authorization: $BEARER_TOKEN" -H "Content-Type: application/json" \
+    -X POST -o new_pipeline.json \
+    --data-raw '{"service_id":"pipeline","container":{"guid":'$(ibmcloud target --output JSON | jq '.resource_group.guid')',"type":"resource_group_id"},"parameters":{"name": "'$TARGET_PIPELINE_NAME'"}}' "$OTC_API_SERVICE_INSTANCES_URL"
+  TARGET_PIPELINE_ID=$(cat new_pipeline.json | jq -r '.instance_id')
+
+  # Bind the new pipeline service instance to the toolchain
+  curl -H "Authorization: $BEARER_TOKEN" -H "Content-Type: application/json" -X PUT --data-raw '' "$OTC_API_SERVICE_INSTANCES_URL/$TARGET_PIPELINE_ID/toolchains/$TOOLCHAIN_ID"
 fi
 
 curl -H "Authorization: $BEARER_TOKEN" -H "Accept: application/x-yaml" -o "${SOURCE_PIPELINE_ID}.yaml" "$PIPELINE_API_URL/pipelines/$SOURCE_PIPELINE_ID"
