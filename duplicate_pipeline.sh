@@ -52,7 +52,7 @@ yq r -j ${SOURCE_PIPELINE_ID}.yaml | tee ${SOURCE_PIPELINE_ID}.json
 jq 'del(. | .hooks)' $SOURCE_PIPELINE_ID.json | jq 'del(.stages[] | .worker)' > "${TARGET_PIPELINE_ID}.json"
 
 # Add the token url
-jq -r '.stages[] | select( .inputs[0].type=="git") | .inputs[0].url' $SOURCE_PIPELINE_ID.json |\
+jq -r '.stages[] | select(.inputs and .inputs[0].type=="git") | .inputs[0].url' $SOURCE_PIPELINE_ID.json |\
 while IFS=$'\n\r' read -r input_gitrepo 
 do
   token_url=$(cat ${SOURCE_PIPELINE_ID}_inputsources.json | jq -r --arg git_repo "$input_gitrepo" '.[] | select( .repo_url==$git_repo ) | .token_url')
