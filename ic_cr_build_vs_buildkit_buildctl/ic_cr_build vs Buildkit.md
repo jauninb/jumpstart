@@ -55,10 +55,6 @@ OPTIONS:
    --ssh value               Allow forwarding SSH agent to the builder. Format default|<id>[=<socket>|<key>[,<key>]]
 ```
 
-## ibmcloud container registry context
-`ibmcloud cr build` is not only building the OCI/Docker image but is laso pushing the bits to the ibmcloud container registry namespace/registry for the given image/tag.
-`Buildkit buildctl` needs to be configured with CR access and the exporter parameter for buildctl build need to include --output with "push=true"
-
 ## buildctl build command to match ibmcloud cr build
 
 ### mandatory arguments
@@ -88,3 +84,44 @@ OPTIONS:
 - `ic cr build --pull` (does not have equivalent?)
 - `ic cr build --quiet` (does not have equivalent?)
 - `ic cr build --file FILENAME` with FILENAME=PATH/DOCKERFILENAME corresponds to `--opt filename=DOCKERFILENAME --local dockerfile=PATH`
+
+## Buildkit Buildctl in the context of a Container Registry Pipeline Job
+
+### ibmcloud container registry context
+`ibmcloud cr build` is not only building the OCI/Docker image but is laso pushing the bits to the ibmcloud container registry namespace/registry for the given image/tag.
+`Buildkit buildctl` needs to be configured with CR access and the output parameter for buildctl build need to include --output with "push=true"
+
+### environment variables relevant to the build
+The following environment variables in the Container Registry Pipeline Job are relevant to the buildkit context to push to the container registry:
+- IBM_CLOUD_API_KEY
+- IBM_CLOUD_REGION
+
+The following environment variables in the Container Registry Pipeline Job are relevant to the buildkit buildctl invocation:
+- REGISTRY_URL (like REGISTRY_URL=us.icr.io)
+- REGISTRY_NAMESPACE (like REGISTRY_NAMESPACE=jauninb)
+- IMAGE_NAME (like IMAGE_NAME=hello-containers-20200910073457864)
+
+### Provide the container registry information configuration to buildkit buildctl
+A file named `config.json` must be created to provided the credentials to access the Container Registry:
+```
+# create a dry-run k8s secret of type docker-registry to obtain
+# the content of a docker config.json file to access the target
+# ibmcloud container registry
+kubectl create secret --dry-run=true --output=json \
+  docker-registry registry-dockerconfig-secret \
+  --docker-server=${REGISTRY_URL} \
+  --docker-password=${IBM_CLOUD_API_KEY} \
+  --docker-username=iamapikey --docker-email=a@b.com | \
+jq -r '.data[".dockerconfigjson"]' | base64 -d > config.json
+```
+
+### Sample ibmcloud cr build equivalent using buildkit
+```
+buildctl build \
+    --frontend dockerfile.v0 --opt filename=Dockerfile --local dockerfile=. \
+    --local context=. \
+    --output type=image,name=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME},push=true
+```
+
+## TODO
+Cache ?
