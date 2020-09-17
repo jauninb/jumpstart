@@ -115,8 +115,22 @@ kubectl create secret --dry-run=true --output=json \
 jq -r '.data[".dockerconfigjson"]' | base64 -d > config.json
 ```
 
-### Sample ibmcloud cr build equivalent using buildkit
+### Snippet for ibmcloud cr build replacement for buildkit buildctl
+
+The following snippet has been used as-is as a replacement for the invocation of the script `https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/build_image.sh` in the `Build container image` of the `CONTAINERIZE` stage for the Toolchain/Pipeline created using template `secure-kube-toolchain`
+
 ```
+curl -sL https://github.com/moby/buildkit/releases/download/v0.7.2/buildkit-v0.7.2.linux-amd64.tar.gz | tar -C /tmp -xz bin/buildctl && mv /tmp/bin/buildctl /usr/bin/buildctl && rmdir --ignore-fail-on-non-empty /tmp/bin
+
+kubectl create secret --dry-run=true --output=json \
+  docker-registry registry-dockerconfig-secret \
+  --docker-server=${REGISTRY_URL} \
+  --docker-password=${IBM_CLOUD_API_KEY} \
+  --docker-username=iamapikey --docker-email=a@b.com | \
+jq -r '.data[".dockerconfigjson"]' | base64 -d > config.json
+
+cat config.json
+
 buildctl build \
     --frontend dockerfile.v0 --opt filename=Dockerfile --local dockerfile=. \
     --local context=. \
@@ -125,3 +139,5 @@ buildctl build \
 
 ## TODO
 Cache ?
+Typical errors:
+- namespace not existing ?
