@@ -88,7 +88,7 @@ OPTIONS:
 ## Buildkit Buildctl in the context of a Container Registry Pipeline Job
 
 ### ibmcloud container registry context
-`ibmcloud cr build` is not only building the OCI/Docker image but is laso pushing the bits to the ibmcloud container registry namespace/registry for the given image/tag.
+`ibmcloud cr build` is not only building the OCI/Docker image but is also pushing the bits to the ibmcloud container registry namespace/registry for the given image/tag.
 `Buildkit buildctl` needs to be configured with CR access and the output parameter for buildctl build need to include --output with "push=true"
 
 ### environment variables relevant to the build
@@ -134,7 +134,7 @@ kubectl create secret --dry-run=true --output=json \
   --docker-username=iamapikey --docker-email=a@b.com | \
 jq -r '.data[".dockerconfigjson"]' | base64 -d > config.json
 
-cat config.json
+export DOCKER_CONFIG=$(pwd)
 
 buildctl build \
     --frontend dockerfile.v0 --opt filename=Dockerfile --local dockerfile=. \
@@ -143,6 +143,21 @@ buildctl build \
 ```
 
 ## TODO
-Cache ?
-Typical errors:
-- namespace not existing ?
+- Current error while trying to push (or even imprt cache from container registry): 
+  ```
+  #5 importing cache manifest from us.icr.io/jauninb-buildkit/hello-container...
+  #5 ERROR: failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/manifests/latest: net/http: TLS handshake timeout
+  ...
+  #13 pushing layers 10.0s done
+  #13 ERROR: failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/blobs/sha256:7ac8a9614582225d71934914a2f22a788ecfff94efd3852dd2b4ed3af44d9d9e: net/http: TLS handshake timeout
+  ------
+  > importing cache manifest from us.icr.io/jauninb-buildkit/hello-containers-20200910073457864:
+  ------
+  ------
+  > exporting to image:
+  ------
+  error: failed to solve: rpc error: code = Unknown desc = failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/blobs/sha256:7ac8a9614582225d71934914a2f22a788ecfff94efd3852dd2b4ed3af44d9d9e: net/http: TLS handshake timeout 
+  ```
+- Cache management ? import latest by default ? Is there a way to compute tag of the previous/last image built
+- Typical errors:
+  - namespace not existing ?
