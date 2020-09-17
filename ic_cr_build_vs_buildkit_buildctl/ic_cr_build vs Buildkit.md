@@ -102,7 +102,10 @@ The following environment variables in the Container Registry Pipeline Job are r
 - IMAGE_NAME (like IMAGE_NAME=hello-containers-20200910073457864)
 
 ### Provide the container registry information configuration to buildkit buildctl
+See https://github.com/moby/buildkit#imageregistry
 A file named `config.json` must be created to provided the credentials to access the Container Registry:
+The location of this file must be given using the `DOCKER_CONFIG` environment variable.
+
 ```
 # create a dry-run k8s secret of type docker-registry to obtain
 # the content of a docker config.json file to access the target
@@ -113,6 +116,8 @@ kubectl create secret --dry-run=true --output=json \
   --docker-password=${IBM_CLOUD_API_KEY} \
   --docker-username=iamapikey --docker-email=a@b.com | \
 jq -r '.data[".dockerconfigjson"]' | base64 -d > config.json
+
+export DOCKER_CONFIG=$(pwd)
 ```
 
 ### Snippet for ibmcloud cr build replacement for buildkit buildctl
