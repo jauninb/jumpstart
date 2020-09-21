@@ -74,8 +74,6 @@ echo "=========================================================="
 echo -e "BUILDING CONTAINER IMAGE: ${IMAGE_NAME}:${IMAGE_TAG}"
 if [ -z "${DOCKER_ROOT}" ]; then DOCKER_ROOT=. ; fi
 if [ -z "${DOCKER_FILE}" ]; then DOCKER_FILE=Dockerfile ; fi
-set -x
-#ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
 if [ - z "$EXTRA_BUILD_ARGS" ]; then
   echo -e ""
 else
@@ -89,6 +87,8 @@ else
   done
   echo "buildctl build args: $BUILD_ARGS"
 fi
+set -x
+#ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
 buildctl build \
     --frontend dockerfile.v0 ${BUILD_ARGS} --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \    
     --local context=${DOCKER_ROOT} \
