@@ -90,7 +90,7 @@ fi
 set -x
 #ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
 buildctl build \
-    --frontend dockerfile.v0 ${BUILD_ARGS} --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \    
+    --frontend dockerfile.v0 ${BUILD_ARGS} --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \
     --local context=${DOCKER_ROOT} \
     --import-cache type=registry,ref=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME} \
     --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}",push=true
