@@ -140,6 +140,7 @@ buildctl build \
     --frontend dockerfile.v0 --opt filename=Dockerfile --local dockerfile=. \
     --local context=. \
     --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:latest",push=true
+    --import-cache type=registry,ref=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}
 ```
 
 ## Usage of `ibmcloud cr build` in open-toolchain templates
