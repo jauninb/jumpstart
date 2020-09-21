@@ -76,10 +76,19 @@ if [ -z "${DOCKER_ROOT}" ]; then DOCKER_ROOT=. ; fi
 if [ -z "${DOCKER_FILE}" ]; then DOCKER_FILE=Dockerfile ; fi
 set -x
 #ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
-#EXTRA_BUILD_ARGS
+if [ "$EXTRA_BUILD_ARGS" ]; then
+  for buildArg in $EXTRA_BUILD_ARGS; do
+    if [ "$buildArg" == "--build-arg" ]; then
+      echo -e ""
+    else
+      BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg "
+    fi
+  done
+  echo "buildctl build args: $BUILD_ARGS"
+fi
 buildctl build \
-    --frontend dockerfile.v0 --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \
-    --local context=${DOCKER_ROOT} \
+    --frontend dockerfile.v0 --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \    
+    --local context=${DOCKER_ROOT} ${BUILD_ARGS} \
     --import-cache type=registry,ref=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME} \
     --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}",push=true
 set +x
