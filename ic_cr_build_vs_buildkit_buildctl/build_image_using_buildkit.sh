@@ -74,7 +74,7 @@ echo "=========================================================="
 echo -e "BUILDING CONTAINER IMAGE: ${IMAGE_NAME}:${IMAGE_TAG}"
 if [ -z "${DOCKER_ROOT}" ]; then DOCKER_ROOT=. ; fi
 if [ -z "${DOCKER_FILE}" ]; then DOCKER_FILE=Dockerfile ; fi
-if [ - z "$EXTRA_BUILD_ARGS" ]; then
+if [ -z "$EXTRA_BUILD_ARGS" ]; then
   echo -e ""
 else
   for buildArg in $EXTRA_BUILD_ARGS; do
