@@ -76,11 +76,14 @@ if [ -z "${DOCKER_ROOT}" ]; then DOCKER_ROOT=. ; fi
 if [ -z "${DOCKER_FILE}" ]; then DOCKER_FILE=Dockerfile ; fi
 set -x
 #ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
-if [ "$EXTRA_BUILD_ARGS" ]; then
+if [ - z "$EXTRA_BUILD_ARGS" ]; then
+  echo -e ""
+else
   for buildArg in $EXTRA_BUILD_ARGS; do
     if [ "$buildArg" == "--build-arg" ]; then
       echo -e ""
-    else
+    else      
+      A_BUILD_ARG=$(echo $buildArg)
       BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg"
     fi
   done
