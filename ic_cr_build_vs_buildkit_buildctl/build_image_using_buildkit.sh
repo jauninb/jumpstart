@@ -81,7 +81,7 @@ if [ "$EXTRA_BUILD_ARGS" ]; then
     if [ "$buildArg" == "--build-arg" ]; then
       echo -e ""
     else
-      BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg "
+      BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg"
     fi
   done
   echo "buildctl build args: $BUILD_ARGS"
