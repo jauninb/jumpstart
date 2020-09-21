@@ -87,8 +87,8 @@ if [ "$EXTRA_BUILD_ARGS" ]; then
   echo "buildctl build args: $BUILD_ARGS"
 fi
 buildctl build \
-    --frontend dockerfile.v0 --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \    
-    --local context=${DOCKER_ROOT} ${BUILD_ARGS} \
+    --frontend dockerfile.v0 ${BUILD_ARGS} --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \    
+    --local context=${DOCKER_ROOT} \
     --import-cache type=registry,ref=${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME} \
     --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG}",push=true
 set +x
