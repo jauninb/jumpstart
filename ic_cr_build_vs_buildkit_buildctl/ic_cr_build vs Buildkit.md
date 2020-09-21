@@ -146,6 +146,8 @@ buildctl build \
 
 The `ibmcloud cr build` command is used only in https://github.com/open-toolchain/commons/blob/master/scripts/build_image.sh
 
+The equivalent script using buildkit is: https://github.com/jauninb/jumpstart/blob/master/ic_cr_build_vs_buildkit_buildctl/build_image_using_buildkit.sh
+
 ## TODO
 
 Notes:
