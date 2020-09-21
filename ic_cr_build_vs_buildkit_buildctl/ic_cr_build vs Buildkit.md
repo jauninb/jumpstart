@@ -142,22 +142,11 @@ buildctl build \
     --output type=image,name="${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:latest",push=true
 ```
 
+## Usage of `ibmcloud cr build` in open-toolchain templates
+
+The `ibmcloud cr build` command is used only in https://github.com/open-toolchain/commons/blob/master/scripts/build_image.sh
+
 ## TODO
-- Current error while trying to push (or even imprt cache from container registry): 
-  ```
-  #5 importing cache manifest from us.icr.io/jauninb-buildkit/hello-container...
-  #5 ERROR: failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/manifests/latest: net/http: TLS handshake timeout
-  ...
-  #13 pushing layers 10.0s done
-  #13 ERROR: failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/blobs/sha256:7ac8a9614582225d71934914a2f22a788ecfff94efd3852dd2b4ed3af44d9d9e: net/http: TLS handshake timeout
-  ------
-  > importing cache manifest from us.icr.io/jauninb-buildkit/hello-containers-20200910073457864:
-  ------
-  ------
-  > exporting to image:
-  ------
-  error: failed to solve: rpc error: code = Unknown desc = failed to do request: Head https://us.icr.io/v2/jauninb-buildkit/hello-containers-20200910073457864/blobs/sha256:7ac8a9614582225d71934914a2f22a788ecfff94efd3852dd2b4ed3af44d9d9e: net/http: TLS handshake timeout 
-  ```
-- Cache management ? import latest by default ? Is there a way to compute tag of the previous/last image built
-- Typical errors:
-  - namespace not existing ?
+
+Notes:
+- to be able execute in a Docker container, `winpty docker run --rm -it -v c://usr://mnt/c ibmcom/pipeline-base-image:2.8`
