@@ -1,14 +1,14 @@
 #!/bin/bash
 # uncomment to debug the script
 # set -x
-# copy the script below into your app code repo (e.g. ./scripts/build_image.sh) and 'source' it from your pipeline job
-#    source ./scripts/build_image.sh
+# copy the script below into your app code repo (e.g. ./scripts/build_image_using_buildkit.sh) and 'source' it from your pipeline job
+#    source ./scripts/build_image_using_buildkit.sh
 # alternatively, you can source it from online script:
-#    source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/build_image.sh")
+#    source <(curl -sSL "https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/build_image_using_buildkit.sh")
 # ------------------
-# source: https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/build_image.sh
+# source: https://raw.githubusercontent.com/open-toolchain/commons/master/scripts/build_image_using_buildkit.sh
 
-# This script does build a Docker image into IBM Container Service private image registry.
+# This script does build a Docker image into IBM Container Service private image registry using Buildkit buildctl - https://github.com/moby/buildkit#building-a-dockerfile-with-buildctl
 # Minting image tag using format: BUILD_NUMBER-BRANCH-COMMIT_ID-TIMESTAMP
 # Also copies information into a build.properties file, so they can be reused later on by other scripts (e.g. image url, chart name, ...)
 
@@ -86,7 +86,6 @@ else
   done
 fi
 set -x
-#ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
 buildctl build \
     --frontend dockerfile.v0 --opt filename=${DOCKER_FILE} --local dockerfile=${DOCKER_ROOT} \
     ${BUILD_ARGS} --local context=${DOCKER_ROOT} \
