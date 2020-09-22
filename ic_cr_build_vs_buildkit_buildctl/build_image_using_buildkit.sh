@@ -81,11 +81,9 @@ else
     if [ "$buildArg" == "--build-arg" ]; then
       echo -e ""
     else      
-      A_BUILD_ARG=$(echo $buildArg)
       BUILD_ARGS="${BUILD_ARGS} --opt build-arg:$buildArg"
     fi
   done
-  echo "buildctl build args: $BUILD_ARGS"
 fi
 set -x
 #ibmcloud cr build -f ${DOCKER_ROOT}/${DOCKER_FILE} -t ${REGISTRY_URL}/${REGISTRY_NAMESPACE}/${IMAGE_NAME}:${IMAGE_TAG} ${EXTRA_BUILD_ARGS} ${DOCKER_ROOT}
