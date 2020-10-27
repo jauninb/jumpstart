@@ -1,0 +1,1 @@
+FROM registry.connect.redhat.com/ibm/ibmjava8-jre-ubi8
