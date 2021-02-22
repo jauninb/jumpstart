@@ -130,6 +130,7 @@ spec:
         - name: description
           value: $(params.description)
         - name: state
-          value: "success"
+          value: "$(tasks.pipeline-git-event-content-inspect.status)"
+          # value: "success"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
