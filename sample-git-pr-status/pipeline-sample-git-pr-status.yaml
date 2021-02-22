@@ -61,8 +61,7 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-ws
-    - name: pipeline-set-git-commit-status
-      runAfter: [pipeline-git-event-content-inspect]
+    - name: pipeline-set-git-commit-pending
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -116,6 +115,6 @@ spec:
         - name: description
           value: $(params.description)
         - name: state
-          value: $(params.state)
+          value: "$tasks.pipeline-git-event-content-inspect.status"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
