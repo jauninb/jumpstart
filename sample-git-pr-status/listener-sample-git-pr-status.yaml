@@ -21,8 +21,6 @@ spec:
     - name: pr-revision
       description: the commit id/sha for the PullRequest
       default: " "
-    - name: description
-      default: "status from cd tekton"
     - name: triggerName
       default: "git-pr-process"
     - name: pipeline-debug
@@ -59,8 +57,6 @@ spec:
             value: $(params.pr-branch)
           - name: pr-revision
             value: $(params.pr-revision)
-          - name: description
-            value: $(params.description)
           - name: pipeline-debug
             value: $(params.pipeline-debug)
         workspaces:

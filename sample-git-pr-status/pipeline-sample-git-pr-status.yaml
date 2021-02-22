@@ -25,8 +25,10 @@ spec:
       default: "output/thebuild.properties"
     - name: git-credentials-json-file
       default: "output/secrets/thecredentials.json"
+    - name: context
+      default: "commit message check"
     - name: description
-      default: "status from cd tekton"
+      default: "verify the commit message"
     - name: pipeline-debug
       default: "0"
   workspaces:
@@ -43,6 +45,8 @@ spec:
           value: $(params.repository)
         - name: revision
           value: $(params.pr-revision)
+        - name: context
+          value: $(params.context)
         - name: description
           value: $(params.description)
         - name: state
@@ -87,6 +91,8 @@ spec:
           value: $(params.repository)
         - name: revision
           value: $(params.pr-revision)
+        - name: context
+          value: $(params.context)
         - name: description
           value: $(params.description)
         - name: state
@@ -127,10 +133,11 @@ spec:
           value: $(params.repository)
         - name: revision
           value: $(params.pr-revision)
+        - name: context
+          value: $(params.context)
         - name: description
           value: $(params.description)
         - name: state
           value: "$(tasks.git-event-content-inspect.status)"
-          # value: "success"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
