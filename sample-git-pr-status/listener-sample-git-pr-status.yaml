@@ -29,6 +29,8 @@ spec:
       default: " "
     - name: state
       default: "success"
+    - name: description
+      default: "status from cd tekton"
     - name: triggerName
       default: "git-pr-process"
     - name: pipeline-debug
@@ -69,6 +71,8 @@ spec:
             value: $(params.pr-revision)
           - name: state
             value: $(params.state)
+          - name: description
+            value: $(params.description)
           - name: pipeline-debug
             value: $(params.pipeline-debug)
         workspaces:
