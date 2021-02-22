@@ -15,9 +15,6 @@ spec:
       default: " "
     - name: branch
       description: the branch for the git repo
-    - name: revision
-      description: the commit id/sha for the clone action
-      default: " "
     - name: pr-repository
       description: The source git repo for the PullRequest
       default: " "
@@ -61,8 +58,6 @@ spec:
             value: $(params.repository)
           - name: branch
             value: $(params.branch)
-          - name: revision
-            value: $(params.revision)
           - name: pr-repository
             value: $(params.pr-repository)
           - name: pr-branch
