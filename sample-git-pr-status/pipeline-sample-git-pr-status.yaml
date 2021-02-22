@@ -25,8 +25,6 @@ spec:
       default: "output/thebuild.properties"
     - name: git-credentials-json-file
       default: "output/secrets/thecredentials.json"
-    - name: state
-      default: "success"
     - name: description
       default: "status from cd tekton"
     - name: pipeline-debug
@@ -34,6 +32,23 @@ spec:
   workspaces:
     - name: pipeline-ws
   tasks:
+    - name: pipeline-set-git-commit-pending
+      taskRef:
+        name: git-set-commit-status
+      workspaces:
+        - name: artifacts
+          workspace: pipeline-ws
+      params:
+        - name: repository
+          value: $(params.repository)
+        - name: revision
+          value: $(params.pr-revision)
+        - name: description
+          value: $(params.description)
+        - name: state
+          value: "pending"
+        - name: pipeline-debug
+          value: $(params.pipeline-debug)
     - name: pipeline-git-event-clone-task
       taskRef:
         name: git-clone-repo
@@ -61,7 +76,7 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-ws
-    - name: pipeline-set-git-commit-pending
+    - name: pipeline-set-git-commit-running
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -100,8 +115,8 @@ spec:
           value: $(tasks.pipeline-git-event-clone-task.results.git-commit)
         - name: git-user
           value: $(tasks.pipeline-git-event-clone-task.results.git-user)
+  finally:        
     - name: pipeline-set-git-commit-status
-      runAfter: [pipeline-git-event-content-inspect]
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -115,6 +130,6 @@ spec:
         - name: description
           value: $(params.description)
         - name: state
-          value: "$tasks.pipeline-git-event-content-inspect.status"
+          value: "success"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
