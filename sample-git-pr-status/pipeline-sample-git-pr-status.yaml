@@ -128,7 +128,12 @@ spec:
               git checkout $(params.branch)
               git log -1
               # Exit success or failure according to fail token in log
-              git log -1 | grep "fail"
+              if git log -1 | grep "fail"; then
+                exit 1
+              else
+                exit 0
+              fi
+
   finally:        
     - name: set-git-commit-status
       taskRef:
