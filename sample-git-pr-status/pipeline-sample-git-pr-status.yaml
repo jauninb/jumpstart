@@ -126,13 +126,9 @@ spec:
               set -e
               cd /artifacts/$(echo "$(params.repository)" | awk -F/ '{print $NF}' | awk -F. '{print $1}')
               git checkout $(params.branch)
-              git show
+              git log -1
               # Exit success or failure according to fail token in log
-              if git log -1 | grep "fail"; then
-                exit 1
-              else
-                exit 0
-              fi
+              git log -1 | grep "fail"
   finally:        
     - name: set-git-commit-status
       taskRef:
