@@ -32,7 +32,7 @@ spec:
   workspaces:
     - name: pipeline-ws
   tasks:
-    - name: pipeline-set-git-commit-pending
+    - name: set-git-commit-pending
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -49,7 +49,7 @@ spec:
           value: "pending"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
-    - name: pipeline-git-event-clone-task
+    - name: git-event-clone-task
       taskRef:
         name: git-clone-repo
       params:
@@ -76,7 +76,7 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-ws
-    - name: pipeline-set-git-commit-running
+    - name: set-git-commit-running
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -93,8 +93,8 @@ spec:
           value: "running"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
-    - name: pipeline-git-event-content-inspect
-      runAfter: [pipeline-git-event-clone-task]
+    - name: git-event-content-inspect
+      runAfter: [git-event-clone-task]
       taskRef:
         name: inspect-git-content
       workspaces:
@@ -102,7 +102,7 @@ spec:
           workspace: pipeline-ws
       params:
         - name: repository
-          value: $(tasks.pipeline-git-event-clone-task.results.git-repository)
+          value: $(tasks.git-event-clone-task.results.git-repository)
         - name: directory-name
           value: "."
         - name: properties-file
@@ -110,13 +110,13 @@ spec:
         - name: git-credentials-json-file
           value: $(params.git-credentials-json-file)
         - name: git-branch
-          value: $(tasks.pipeline-git-event-clone-task.results.git-branch)
+          value: $(tasks.git-event-clone-task.results.git-branch)
         - name: git-commit
-          value: $(tasks.pipeline-git-event-clone-task.results.git-commit)
+          value: $(tasks.git-event-clone-task.results.git-commit)
         - name: git-user
-          value: $(tasks.pipeline-git-event-clone-task.results.git-user)
+          value: $(tasks.git-event-clone-task.results.git-user)
   finally:        
-    - name: pipeline-set-git-commit-status
+    - name: set-git-commit-status
       taskRef:
         name: git-set-commit-status
       workspaces:
@@ -130,7 +130,7 @@ spec:
         - name: description
           value: $(params.description)
         - name: state
-          value: "$(tasks.pipeline-git-event-content-inspect.status)"
+          value: "$(tasks.git-event-content-inspect.status)"
           # value: "success"
         - name: pipeline-debug
           value: $(params.pipeline-debug)
