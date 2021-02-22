@@ -102,7 +102,7 @@ spec:
         - name: pipeline-debug
           value: $(params.pipeline-debug)
     - name: inspect-git-commit-message
-      runAfter: [git-clone]
+      runAfter: [git-clone, set-git-commit-running]
       taskRef:
         name: inspect-git-content
       workspaces:
