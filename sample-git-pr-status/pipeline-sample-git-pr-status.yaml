@@ -103,26 +103,30 @@ spec:
           value: $(params.pipeline-debug)
     - name: inspect-git-commit-message
       runAfter: [git-clone, set-git-commit-running]
-      taskRef:
-        name: inspect-git-content
-      workspaces:
-        - name: workspace
-          workspace: pipeline-ws
       params:
         - name: repository
           value: $(tasks.git-clone.results.git-repository)
-        - name: directory-name
-          value: "."
-        - name: properties-file
-          value: $(params.properties-file)
-        - name: git-credentials-json-file
-          value: $(params.git-credentials-json-file)
-        - name: git-branch
-          value: $(tasks.git-clone.results.git-branch)
-        - name: git-commit
-          value: $(tasks.git-clone.results.git-commit)
-        - name: git-user
-          value: $(tasks.git-clone.results.git-user)
+        - name: branch
+          value: $(params.pr-branch)
+      workspaces:
+        - name: workspace
+          workspace: pipeline-ws
+      taskSpec:
+        workspaces:
+          - name: workspace
+            description: The git repo will be cloned onto the volume backing this workspace
+            mountPath: /artifacts
+        params:
+          - name: repository
+          - name: branch
+        steps:
+          - name: inspect-commit-message
+            image: alpine/git
+            script: |
+              set -e
+              cd /artifacts/$(echo "$(params.repository)" | awk -F/ '{print $NF}' | awk -F. '{print $1}')
+              git checkout $(params.branch)
+
   finally:        
     - name: set-git-commit-status
       taskRef:
