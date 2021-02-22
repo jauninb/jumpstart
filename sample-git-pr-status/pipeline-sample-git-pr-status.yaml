@@ -71,7 +71,7 @@ spec:
         - name: git-access-token
           value: $(params.git-access-token)
         - name: directory-name
-          value: "."
+          value: ""
         - name: properties-file
           value: $(params.properties-file)
         - name: git-credentials-json-file
@@ -126,7 +126,7 @@ spec:
               set -e
               cd /artifacts/$(echo "$(params.repository)" | awk -F/ '{print $NF}' | awk -F. '{print $1}')
               git checkout $(params.branch)
-
+              git show
   finally:        
     - name: set-git-commit-status
       taskRef:
